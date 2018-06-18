@@ -1,0 +1,32 @@
+version: '2'
+services:
+
+  db:
+    image: mysql:5.7
+    volumes:
+      - "./.data/db:/var/lib/mysql"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: laravel_ddb
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: laravel
+    ports:
+      - "3306:3306"
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: web
+    volumes:
+      - .:/var/www/html
+    ports:
+      - "80:80"
+    links:
+      - db
+      - redis
+
+  redis:
+    image: redis:4.0
+    container_name: redis
